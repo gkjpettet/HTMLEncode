@@ -67,8 +67,8 @@ Protected Module HTMLEncode
 		  ' Loop through each character and encode entity characters with their entity names.
 		  ' List of entities here: http://www.freeformatter.com/html-entities.html
 		  
-		  dim char, symbol, result as Text
-		  dim i, limit as Integer
+		  dim char, char2, symbol, result as Text
+		  dim i, j, limit as Integer
 		  
 		  if t = "" then return ""
 		  
@@ -77,6 +77,29 @@ Protected Module HTMLEncode
 		  limit = t.Length - 1
 		  for i = 0 to limit
 		    char = t.Mid(i, 1)
+		    
+		    ' If char=& then check that this isn't an HTML entity symbol (if so, leave it alone)
+		    ' To figure this out, we need to construct a string starting with `&` continuing until we
+		    ' encounter a space, `;` or EndOfLine character
+		    if char = "&" then
+		      if i < limit then
+		        symbol = "&"
+		        for j = (i+1) to limit
+		          char2 = t.Mid(j, 1)
+		          symbol = symbol + char2
+		          if char2 = " "  or char2 = ";" or _
+		            char2 = EndOfLine.OSX or char2 = EndOfLine.UNIX or char2 = EndOfLine.Windows then
+		            symbol = symbol.Trim
+		            exit
+		          end if
+		        next j
+		        if symbols.HasKey(symbol) then ' ignore this HTML symbol (it's already encoded)
+		          result = result + "&"
+		          continue
+		        end if
+		      end if
+		    end if
+		    
 		    result = result + CharToSymbol(char)
 		  next i
 		  
@@ -389,7 +412,7 @@ Protected Module HTMLEncode
 	#tag Constant, Name = ENTITY_SYMBOLS_REGEX, Type = Text, Dynamic = False, Default = \"(&\\w+;)", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION, Type = Text, Dynamic = False, Default = \"1.0.0", Scope = Protected
+	#tag Constant, Name = VERSION, Type = Text, Dynamic = False, Default = \"1.1.0", Scope = Protected
 	#tag EndConstant
 
 
