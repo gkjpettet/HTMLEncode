@@ -357,7 +357,7 @@ Protected Module HTMLEncode
 		
 		using HTMLEncode
 		dim raw as Text = "<p>Copyright © 2016</p>"
-		dim encoded as Text = raw.EncodeEntities
+		dim encoded as Text = raw.EncodeEntities()
 		
 		' result is:
 		' &lt;p&gt;Copyright &copy; 2016&lt;/p&gt;
