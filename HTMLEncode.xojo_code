@@ -55,6 +55,14 @@ Protected Module HTMLEncode
 	#tag EndMethod
 
 	#tag Method, Flags = &h1
+		Protected Sub EncodeEntities(ByRef t as Text)
+		  ' Convenience method
+		  
+		  t = EncodeEntities(t)
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h1
 		Protected Function EncodeEntities(Extends t as Text) As Text
 		  ' Convenience method
 		  
@@ -409,7 +417,7 @@ Protected Module HTMLEncode
 	#tag Constant, Name = ENTITY_SYMBOLS_REGEX, Type = Text, Dynamic = False, Default = \"(&\\w+;)", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION, Type = Text, Dynamic = False, Default = \"1.2.0", Scope = Protected
+	#tag Constant, Name = VERSION, Type = Text, Dynamic = False, Default = \"1.2.5", Scope = Protected
 	#tag EndConstant
 
 
