@@ -64,46 +64,40 @@ Protected Module HTMLEncode
 
 	#tag Method, Flags = &h1
 		Protected Function EncodeEntities(t as Text) As Text
-		  ' Loop through each character and encode entity characters with their entity names.
-		  ' List of entities here: http://www.freeformatter.com/html-entities.html
+		  using xojo.Core
 		  
-		  dim char, char2, symbol, result as Text
-		  dim i, j, limit as Integer
-		  
-		  if t = "" then return ""
+		  dim rg as RegEx
+		  dim match as RegExMatch
+		  dim tmp as String
 		  
 		  Initialise()
 		  
-		  limit = t.Length - 1
-		  for i = 0 to limit
-		    char = t.Mid(i, 1)
+		  ' Replace every HTML entity character with their corresponding HTML entity symbol
+		  for each entry as DictionaryEntry in characters
 		    
-		    ' If char=& then check that this isn't an HTML entity symbol (if so, leave it alone)
-		    ' To figure this out, we need to construct a string starting with `&` continuing until we
-		    ' encounter a space, `;` or EndOfLine character
-		    if char = "&" then
-		      if i < limit then
-		        symbol = "&"
-		        for j = (i+1) to limit
-		          char2 = t.Mid(j, 1)
-		          symbol = symbol + char2
-		          if char2 = " "  or char2 = ";" or _
-		            char2 = EndOfLine.OSX or char2 = EndOfLine.UNIX or char2 = EndOfLine.Windows then
-		            symbol = symbol.Trim
-		            exit
-		          end if
-		        next j
-		        if symbols.HasKey(symbol) then ' ignore this HTML symbol (it's already encoded)
-		          result = result + "&"
-		          continue
-		        end if
-		      end if
-		    end if
+		    if entry.Key = "&" then continue ' skip ampersands for the moment...
 		    
-		    result = result + CharToSymbol(char)
-		  next i
+		    t = t.ReplaceAll(entry.Key, entry.Value)
+		    
+		  next entry
 		  
-		  return result
+		  ' We need to find all ampersands that aren't part of an HTML symbol and replace
+		  ' them with &amp;
+		  rg = new RegEx
+		  rg.SearchPattern = AMPERSAND_REGEX
+		  rg.ReplacementPattern = "&amp;"
+		  rg.Options.ReplaceAllMatches = True
+		  
+		  tmp = t ' temporary String to limit the number of ToText calls
+		  
+		  ' Run the RegEx search
+		  match = rg.Search(tmp)
+		  while match <> Nil
+		    tmp = rg.Replace(tmp)
+		    match = rg.Search(tmp)
+		  wend
+		  
+		  return tmp.ToText
 		End Function
 	#tag EndMethod
 
@@ -409,10 +403,13 @@ Protected Module HTMLEncode
 	#tag EndProperty
 
 
+	#tag Constant, Name = AMPERSAND_REGEX, Type = Text, Dynamic = False, Default = \"&(\?!(\\w+;))", Scope = Private
+	#tag EndConstant
+
 	#tag Constant, Name = ENTITY_SYMBOLS_REGEX, Type = Text, Dynamic = False, Default = \"(&\\w+;)", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION, Type = Text, Dynamic = False, Default = \"1.1.0", Scope = Protected
+	#tag Constant, Name = VERSION, Type = Text, Dynamic = False, Default = \"1.2.0", Scope = Protected
 	#tag EndConstant
 
 

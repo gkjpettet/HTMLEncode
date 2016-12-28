@@ -2,7 +2,6 @@
 Begin Window WinMain
    BackColor       =   &cFFFFFF00
    Backdrop        =   0
-   BalloonHelp     =   ""
    CloseButton     =   True
    Compatibility   =   ""
    Composite       =   False
@@ -135,6 +134,7 @@ Begin Window WinMain
       Selectable      =   False
       TabIndex        =   2
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "Human:"
       TextAlign       =   2
       TextColor       =   &c00000000
@@ -169,6 +169,7 @@ Begin Window WinMain
       Selectable      =   False
       TabIndex        =   3
       TabPanelIndex   =   0
+      TabStop         =   True
       Text            =   "HTML:"
       TextAlign       =   2
       TextColor       =   &c00000000
