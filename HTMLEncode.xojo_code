@@ -84,6 +84,7 @@ Protected Module HTMLEncode
 		  for each entry as DictionaryEntry in characters
 		    
 		    if entry.Key = "&" then continue ' skip ampersands for the moment...
+		    if entry.Key = "ß" then continue ' skip as Xojo seems to mistake `ss` for ß
 		    
 		    t = t.ReplaceAll(entry.Key, entry.Value)
 		    
@@ -417,7 +418,7 @@ Protected Module HTMLEncode
 	#tag Constant, Name = ENTITY_SYMBOLS_REGEX, Type = Text, Dynamic = False, Default = \"(&\\w+;)", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = VERSION, Type = Text, Dynamic = False, Default = \"1.2.5", Scope = Protected
+	#tag Constant, Name = VERSION, Type = Text, Dynamic = False, Default = \"1.2.6", Scope = Protected
 	#tag EndConstant
 
 
